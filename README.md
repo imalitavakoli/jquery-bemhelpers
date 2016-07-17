@@ -1,6 +1,6 @@
 # jquery-bemhelpers
 
-BEM helpers for jQuery 
+BEM helpers for jQuery
 
 ## Why you might need it
 
@@ -70,6 +70,8 @@ Key/value modifiers are different from boolean modifiers in that they have disti
 `.setMod(blockName, modName, modVal)`
 
 *modVal* should not be a boolean value, otherwise it will be treated as a boolean modifier.
+
+If you also set *modVal* to an empty String `''`, the modifier will be removed.
 
 ### Set a key/value modifier on an element:
 
