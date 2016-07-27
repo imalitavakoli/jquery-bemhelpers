@@ -80,16 +80,11 @@
                     classPattern = block + (elem !== undefined ? BEMsyntax.elem + elem : '') +
                         BEMsyntax.modBefore + modName;
 
-                var removeTheAlreadySetValue = false;
-
                 if (modVal === false) {
                     $this.removeClass(classPattern);
                 } else if (modVal === true) {
                     $this.addClass(classPattern);
                 } else {
-                    // if the String modifer value is an empty String, then it means that user likes to remove it. So set 'removeTheAlreadySetValue' to true.
-                    if (modVal === '') removeTheAlreadySetValue = true;
-
                     $.each(getElemClasses(this), function(i, c) {
                         if (c.indexOf(classPattern) === 0
                             && c.substr(classPattern.length, BEMsyntax.modKeyVal.length) === BEMsyntax.modKeyVal) {
@@ -98,13 +93,15 @@
                         }
                     });
 
-                    // Check whether we should remove the modifer class or not according to 'removeTheAlreadySetValue'
-                    if (removeTheAlreadySetValue === true) $this.removeClass(classPattern + BEMsyntax.modKeyVal + modVal);
-                    else $this.addClass(classPattern + BEMsyntax.modKeyVal + modVal);
+                    // We have removed the modifier class above, now check only
+                    // if 'modVal' is NOT an empty string, then set a new
+                    // modifier class according to its value. Otherwise
+                    // (if 'modVal' is an empty String) don't do anything!
+                    // Because user liked to remove the modifier class totally
+                    if (modVal !== '') {
+                        $this.addClass(classPattern + BEMsyntax.modKeyVal + modVal);
+                    }
                 }
-
-                // if we're dealing with a String modifer(ONLY if we're dealing with a String modifer 'removeTheAlreadySetValue' may be true) and 'removeTheAlreadySetValue' is true, then it means that user aims to remove the already existing modifier value class.
-                if (removeTheAlreadySetValue === true) modVal = false;
 
                 // after the modifier is set, run the corresponding custom event
                 var args = {
@@ -118,7 +115,7 @@
                 $this.trigger('setMod:' + getEventPattern(block, elem, modName), args);
                 // for boolean modifiers, one can only use the wildcard pattern,
                 // so no need to trigger the same event twice
-                if (typeof modVal !== 'boolean') {
+                if (typeof modVal !== 'boolean' && modVal !== '') {
                     $this.trigger('setMod:' + getEventPattern(block, elem, modName, modVal), args);
                 }
             });
